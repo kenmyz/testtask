@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -22,12 +24,13 @@ import static org.mockito.Mockito.verify;
  */
 
 @RunWith(SpringRunner.class)
+@ContextConfiguration(classes = TestConfiguration.class)
 @SpringBootTest
 public class CommandProcessorTest {
 
 	public static final String MOCKED_MYINFO = "Mocked myinfo";
-	private static final String MOCKED_VIEW_SHOP = "Mocked viewShop"
-			;
+	private static final String MOCKED_VIEW_SHOP = "Mocked viewShop";
+
 	@Autowired
 	CommandProcessor processor;
 
@@ -65,7 +68,7 @@ public class CommandProcessorTest {
 	}
 
 	@Test
-	public void testLogoutCommand() {
+	public void testLogoutCommand() throws UserNotLogged {
 		assert ("OK".equals(processor.processCommand("logout").toString()));
 		verify(service).logout();
 	}

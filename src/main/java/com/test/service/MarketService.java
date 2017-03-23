@@ -64,8 +64,13 @@ public class MarketService {
 		return userName;
 	}
 
-	public void logout() {
-		userName = null;
+	public void logout() throws UserNotLogged {
+		if (!isLogged()){
+			throw new UserNotLogged();
+		} else {
+			loggedUsers.remove(userName);
+			userName = null;
+		}
 	}
 
 	private boolean isUserCanBuy(MarketUser user, MarketItem item){
