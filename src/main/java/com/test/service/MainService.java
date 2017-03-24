@@ -13,7 +13,7 @@ import java.net.ServerSocket;
 /**
  * Created by Ken on 23.03.2017.
  */
-@Service
+@Service("MainService")
 public class MainService implements ApplicationRunner {
 
 	@Autowired

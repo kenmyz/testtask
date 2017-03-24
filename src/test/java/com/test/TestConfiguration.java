@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("com.test")
 public class TestConfiguration {
 
-	@Bean
+	@Bean("MainService")
 	MainService getService(){
 		return null;
 	}

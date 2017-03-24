@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
  */
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
+@ContextConfiguration(classes = {TestConfiguration.class})
 @SpringBootTest
 public class CommandProcessorTest {
 
