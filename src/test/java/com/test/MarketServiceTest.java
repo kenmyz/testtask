@@ -58,7 +58,6 @@ public class MarketServiceTest {
 	}
 
 	@Test
-	@Ignore //May be I fix it later
 	public void testLogoff() throws UserIsAlreadyLogged, UserNotLogged {
 		MarketService serve = getLoggedMarketService(UUID.randomUUID().toString());
 		serve.logout();

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -24,6 +26,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 @Service
 public class MarketService {
 
+	public static final int INIT_USER_SUM = 100;
 	@Autowired
 	private Shop shop;
 
@@ -33,7 +36,7 @@ public class MarketService {
 	@Autowired
 	private MarketItemRepository marketItemRepository;
 
-	Set<String> loggedUsers = new ConcurrentSkipListSet<>();
+	private final Set<MarketUser> loggedUsers;
 
 	private MarketUser userName = null;
 
@@ -41,15 +44,16 @@ public class MarketService {
 		this.shop = shop;
 		this.userRepo = userRepo;
 		this.marketItemRepository = marketItemRepository;
+		loggedUsers = Collections.synchronizedSet(new HashSet<MarketUser>());
 	}
 
 	public void login(String userName) throws UserIsAlreadyLogged {
-		if (!loggedUsers.add(userName)) {
+		MarketUser user = userRepo.getByUserName(userName).orElse(new MarketUser(userName, BigDecimal.valueOf
+				(INIT_USER_SUM)));
+		if (!loggedUsers.add(user)) {
 			throw new UserIsAlreadyLogged();
 		}
-		Optional<MarketUser> user = userRepo.getByUserName(userName);
-		this.userName = user.orElseGet(() -> new MarketUser(userName, BigDecimal.valueOf
-				(100)));
+		this.userName = user;
 	}
 
 	public boolean isLogged() {

@@ -63,4 +63,19 @@ public class MarketUser {
 	public boolean removeItem(MarketItem marketItem) {
 		return items.remove(marketItem);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		MarketUser that = (MarketUser) o;
+
+		return userName.equals(that.userName);
+	}
+
+	@Override
+	public int hashCode() {
+		return userName.hashCode();
+	}
 }
