@@ -9,6 +9,8 @@ import com.test.item.MarketItem;
 import com.test.user.MarketUser;
 import com.test.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +25,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * Created by Ken on 19.03.2017.
  */
 
-@Service
+@Component
+@Scope(scopeName = "prototype")
 public class MarketService {
 
 	public static final int INIT_USER_SUM = 100;
@@ -36,22 +39,22 @@ public class MarketService {
 	@Autowired
 	private MarketItemRepository marketItemRepository;
 
-	private final Set<MarketUser> loggedUsers;
-
 	private MarketUser userName = null;
 
 	public MarketService(Shop shop, UserRepository userRepo, MarketItemRepository marketItemRepository) {
 		this.shop = shop;
 		this.userRepo = userRepo;
 		this.marketItemRepository = marketItemRepository;
-		loggedUsers = Collections.synchronizedSet(new HashSet<MarketUser>());
 	}
 
 	public void login(String userName) throws UserIsAlreadyLogged {
 		MarketUser user = userRepo.getByUserName(userName).orElse(new MarketUser(userName, BigDecimal.valueOf
 				(INIT_USER_SUM)));
-		if (!loggedUsers.add(user)) {
-			throw new UserIsAlreadyLogged();
+		if(!user.equals(this.userName)) {
+			if(this.userName != null){
+				shop.leftUser(this.userName);
+			}
+			shop.enterUser(user);
 		}
 		this.userName = user;
 	}
@@ -71,7 +74,7 @@ public class MarketService {
 		if (!isLogged()){
 			throw new UserNotLogged();
 		} else {
-			loggedUsers.remove(userName);
+			shop.leftUser(userName);
 			userName = null;
 		}
 	}

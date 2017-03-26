@@ -4,6 +4,7 @@ import com.test.errors.ItemNotInMarket;
 import com.test.errors.UserIsAlreadyLogged;
 import com.test.errors.UserNotLogged;
 import com.test.service.MarketService;
+import com.test.user.MarketUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -174,4 +175,15 @@ public class CommandProcessor {
 			return parameters;
 		}
 	}
+
+	public void finishProcessing() {
+		if(marketService.isLogged()){
+			try {
+				marketService.logout();
+			} catch (UserNotLogged userNotLogged) {
+				//ignore due check before
+			}
+		}
+	}
+
 }

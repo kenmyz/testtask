@@ -1,9 +1,13 @@
 package com.test;
 
+import com.test.errors.UserIsAlreadyLogged;
 import com.test.item.MarketItem;
 import com.test.item.MarketItemRepository;
+import com.test.user.MarketUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -18,6 +22,8 @@ public class Shop {
 	MarketItemRepository marketItemRepository;
 
 	private Set<MarketItem> items = new HashSet<>();
+
+	private final Set<MarketUser> loggedUsers = Collections.synchronizedSet(new HashSet<MarketUser>());
 
 	public boolean removeItem(MarketItem marketItem) {
 		return items.remove(marketItem);
@@ -34,4 +40,13 @@ public class Shop {
 		}
 	}
 
+	public void enterUser(MarketUser user) throws UserIsAlreadyLogged {
+		if (!loggedUsers.add(user)) {
+			throw new UserIsAlreadyLogged();
+		}
+	}
+
+	public void leftUser(MarketUser userName) {
+		loggedUsers.remove(userName);
+	}
 }

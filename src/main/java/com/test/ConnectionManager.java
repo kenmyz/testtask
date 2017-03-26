@@ -1,5 +1,6 @@
 package com.test;
 
+import com.test.user.MarketUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,7 @@ public class ConnectionManager extends Thread {
 				}
 			}
 		} catch (Exception e) {
+			commandProcessor.finishProcessing();
 			e.printStackTrace();
 		} finally {
 			try {
